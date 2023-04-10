@@ -33,7 +33,7 @@ class TezDevNFT(
 
     @sp.entry_point
     def ownerMint(self, recipient):
-        sp.verify(self.is_administrator(sp.sender), "NOT AN OWNER")
+        sp.verify(self.is_administrator(sp.sender), "FA2_NOT_ADMIN")
 
         token_id = self.data.last_token_id
         metadata = sp.map({
@@ -47,7 +47,7 @@ class TezDevNFT(
 
     @sp.entry_point
     def setPrice(self, price):
-        sp.verify(self.is_administrator(sp.sender), "NOT AN OWNER")
+        sp.verify(self.is_administrator(sp.sender), "FA2_NOT_ADMIN")
         sp.verify(price > 0, "INVALID PRICE")
 
         self.data.price = price
@@ -60,7 +60,7 @@ def test():
             "https://gateway.pinata.cloud/ipfs/QmRj2GC9evHerFyg8i8F7deu3D4UTuuUTcwmsiYwjLQsPD"
         ),
         admin=sp.address("tz1gX4BdwYdwoyKGwUQjrSLJf3961eh9zgnX"),
-        price = 500000
+        price = 5000000
     )
     sc += tezDevNft
 
@@ -69,6 +69,6 @@ sp.add_compilation_target("tezDevNFT", TezDevNFT(
             "https://gateway.pinata.cloud/ipfs/QmRj2GC9evHerFyg8i8F7deu3D4UTuuUTcwmsiYwjLQsPD"
         ),
         admin=sp.address("tz1gX4BdwYdwoyKGwUQjrSLJf3961eh9zgnX"),
-        price = 500000
+        price = 5000000
     )
 )
