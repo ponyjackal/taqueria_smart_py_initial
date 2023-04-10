@@ -27,7 +27,7 @@ class TezDevNFT(FA2.Admin, FA2.Fa2Nft):
 
     @sp.entry_point
     def ownerMint(self, recipient):
-        sp.verify(self.data.administrator == sp.sender, "NOT AN OWNER")
+        sp.verify(self.is_administrator(sp.sender), "NOT AN OWNER")
 
         token_id = self.data.last_token_id
         metadata = sp.map({
@@ -41,13 +41,13 @@ class TezDevNFT(FA2.Admin, FA2.Fa2Nft):
 
     @sp.entry_point
     def setPrice(self, price):
-        sp.verify(self.data.administrator == sp.sender, "NOT AN OWNER")
+        sp.verify(self.is_administrator(sp.sender), "NOT AN OWNER")
         sp.verify(price > 0, "INVALID PRICE")
 
         self.data.price = price
     @sp.entry_point
     def withdraw(self):
-        sp.verify(self.data.administrator == sp.sender, "NOT AN OWNER")
+        sp.verify(self.is_administrator(sp.sender), "NOT AN OWNER")
 
         sp.send(self.data.administrator, sp.balance)
 
