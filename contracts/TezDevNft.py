@@ -3,9 +3,6 @@ import smartpy as sp
 FA2 = sp.io.import_script_from_url(
     "https://smartpy.io/templates/fa2_lib.py"
 )
-Utils = sp.io.import_script_from_url(
-    "https://raw.githubusercontent.com/RomarQ/tezos-sc-utils/main/smartpy/utils.py"
-)
 
 class TezDevNFT(FA2.Admin, FA2.Fa2Nft):
     def __init__(self, metadata, admin, price):
