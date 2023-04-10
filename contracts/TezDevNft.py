@@ -8,9 +8,13 @@ Utils = sp.io.import_script_from_url(
 )
 
 class TezDevNFT(FA2.Fa2Nft):
+    def __init__(self, metadata, price):
+        FA2.Fa2Nft.__init__(self, metadata)
+        self.update_initial_storage(price = price)
+
     @sp.entry_point
     def mint(self, token_info):
-        sp.verify(sp.amount >= sp.tez(5),
+        sp.verify(sp.amount >= sp.utils.nat_to_mutez(self.data.price),
                       "INSUFFICIENT AMOUNT OF TEZOS")
 
         token_id = self.data.last_token_id
@@ -20,19 +24,26 @@ class TezDevNFT(FA2.Fa2Nft):
         self.data.ledger[token_id] = sp.sender
         self.data.last_token_id += 1
 
+    @sp.entry_point
+    def setPrice(self, price):
+        sp.verify(price > 0, "INVALID PRICE")
+        self.data.price = price
+
 @sp.add_test(name = "Test tezDevNft")
 def test():
     sc = sp.test_scenario()
     tezDevNft = TezDevNFT(
         metadata = sp.utils.metadata_of_url(
             "https://gateway.pinata.cloud/ipfs/QmRj2GC9evHerFyg8i8F7deu3D4UTuuUTcwmsiYwjLQsPD"
-        )
+        ),
+        price = 500000
     )
     sc += tezDevNft
 
 sp.add_compilation_target("tezDevNFT", TezDevNFT(
         metadata = sp.utils.metadata_of_url(
             "https://gateway.pinata.cloud/ipfs/QmRj2GC9evHerFyg8i8F7deu3D4UTuuUTcwmsiYwjLQsPD"
-        )
+        ),
+        price = 500000
     )
 )
