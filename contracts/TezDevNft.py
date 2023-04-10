@@ -14,24 +14,30 @@ class TezDevNFT(FA2.Admin, FA2.Fa2Nft):
         self.update_initial_storage(price = price)
 
     @sp.entry_point
-    def publicMint(self, token_info):
+    def publicMint(self):
         sp.verify(sp.amount >= sp.utils.nat_to_mutez(self.data.price),
                       "INSUFFICIENT AMOUNT OF TEZOS")
 
         token_id = self.data.last_token_id
+        metadata = sp.map({
+            "":  sp.utils.bytes_of_string("https://gateway.pinata.cloud/ipfs/QmRj2GC9evHerFyg8i8F7deu3D4UTuuUTcwmsiYwjLQsPD")
+        })
         self.data.token_metadata[token_id] = sp.record(
-            token_id=token_id, token_info=token_info
+            token_id=token_id, token_info=metadata
         )
         self.data.ledger[token_id] = sp.sender
         self.data.last_token_id += 1
 
     @sp.entry_point
-    def ownerMint(self, recipient, token_info):
+    def ownerMint(self, recipient):
         sp.verify(self.data.administrator == sp.sender, "NOT AN OWNER")
 
         token_id = self.data.last_token_id
+        metadata = sp.map({
+            "":  sp.utils.bytes_of_string("https://gateway.pinata.cloud/ipfs/QmRj2GC9evHerFyg8i8F7deu3D4UTuuUTcwmsiYwjLQsPD")
+        })
         self.data.token_metadata[token_id] = sp.record(
-            token_id=token_id, token_info=token_info
+            token_id=token_id, token_info=metadata
         )
         self.data.ledger[token_id] = recipient
         self.data.last_token_id += 1
@@ -40,7 +46,7 @@ class TezDevNFT(FA2.Admin, FA2.Fa2Nft):
     def setPrice(self, price):
         sp.verify(self.data.administrator == sp.sender, "NOT AN OWNER")
         sp.verify(price > 0, "INVALID PRICE")
-        
+
         self.data.price = price
 
 @sp.add_test(name = "Test tezDevNft")
